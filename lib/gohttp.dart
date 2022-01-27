@@ -3,13 +3,15 @@ library gohttp;
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:ffi';
+import 'dart:io';
 
+import 'package:call/ffi.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gohttp/src/godart.dart';
-import 'package:gohttp/src/gohttp.dart';
 
 part 'src/model.dart';
+part 'src/godart.dart';
+part 'src/gohttp.dart';
 
 /// http 请求对象
 class Http {
@@ -23,8 +25,15 @@ class Http {
     goSetTimeout(timeout);
   }
 
+  // 获取gohttp版本信息
+  getVersion() async {
+    Pointer<Int8> version = goGetVersion();
+    return version.cast<Utf8>().toDartString();
+  }
+
   // post 请求
-  post(String url, {Map<String, dynamic>? params, Map<String, String>? header}) async {
+  post(String url,
+      {Map<String, dynamic>? params, Map<String, String>? header}) async {
     String respJson = await compute<Map<String, dynamic>, String>((data) {
       String dataStr = json.encode(data);
       Pointer<Int8> resp = goPost(GoString.fromString(dataStr));
@@ -40,7 +49,8 @@ class Http {
   }
 
   // get 请求
-  get(String url, {Map<String, dynamic>? params, Map<String, String>? header}) async {
+  get(String url,
+      {Map<String, dynamic>? params, Map<String, String>? header}) async {
     String respJson = await compute<Map<String, dynamic>, String>((data) {
       String dataStr = json.encode(data);
       Pointer<Int8> resp = goGet(GoString.fromString(dataStr));
@@ -56,10 +66,9 @@ class Http {
   }
 
   // 转换返回值为ResponseData
-  toResponseData(String data){
+  toResponseData(String data) {
     Map<String, dynamic> map = json.decode(data.toString());
     ResponseData responseData = ResponseData.fromJson(map);
     return responseData;
   }
-
 }

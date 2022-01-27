@@ -1,6 +1,4 @@
-import "dart:ffi";
-import "dart:convert";
-import 'package:ffi/ffi.dart';
+part of gohttp;
 
 class GoString extends Struct {
   external

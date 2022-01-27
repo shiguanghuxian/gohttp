@@ -17,12 +17,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // 设置请求根地址
     Http().setBaseAddress("https://www.baidu.com");
+    
+    _showVersion();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _showVersion() async {
+    // 输出版本信息
+    String version = await Http().getVersion();
+    log('gohttp版本: ${version}');
   }
 
   void _post() async {

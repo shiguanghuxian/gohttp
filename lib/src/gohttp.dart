@@ -1,7 +1,4 @@
-import 'dart:ffi';
-import 'dart:io';
-import 'package:call/ffi.dart';
-import 'package:gohttp/src/godart.dart';
+part of gohttp;
 
 DynamicLibrary lib = Platform.isMacOS
     ? DynamicLibrary.open('gohttp.dylib')

@@ -3,6 +3,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 )
 
@@ -107,4 +108,12 @@ func strToRequestData(in string) (*RequestData, *ResponseData) {
 }
 
 func main() {
+	version := map[string]string{
+		"version":    VERSION,
+		"build_time": BUILD_TIME,
+		"go_version": GO_VERSION,
+		"git_hash":   GIT_HASH,
+	}
+	data, _ := json.Marshal(version)
+	fmt.Println(string(data))
 }

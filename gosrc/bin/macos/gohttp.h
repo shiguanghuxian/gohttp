@@ -70,6 +70,7 @@ extern "C" {
 
 extern char* GetVersion();
 extern void SetBaseAddress(GoString* in);
+extern void SetTimeout(GoInt64 in);
 extern void SetHeader(GoString* in);
 extern char* Post(GoString* in);
 extern char* Get(GoString* in);
