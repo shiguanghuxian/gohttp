@@ -27,4 +27,4 @@
 .dart_tool/
 .packages
 build/
-gosrc/gohttp
+gosrc/export_c/gohttp

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:example/http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -17,8 +18,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // 设置请求根地址
-    Http().setBaseAddress("https://www.baidu.com");
     
     _showVersion();
   }
@@ -30,12 +29,12 @@ class _HomePageState extends State<HomePage> {
 
   void _showVersion() async {
     // 输出版本信息
-    String version = await Http().getVersion();
+    String version = await publicHttp.getVersion();
     log('gohttp版本: ${version}');
   }
 
   void _post() async {
-    ResponseData respJson = await Http().post('/v1/demo');
+    ResponseData respJson = await publicHttp.post('/v1/demo');
     EasyLoading.showInfo("code: ${respJson.statusCode} \n status: ${respJson.status}");
   }
 

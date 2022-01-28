@@ -1,3 +1,7 @@
 {
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "go.toolsEnvVars": {
+        "GOOS": "js",
+        "GOARCH": "wasm"
+    }
 }
