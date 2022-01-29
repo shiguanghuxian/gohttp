@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div>
+        <button onClick="post()">POST</button>
+        <button onClick="get()">GET</button>
+        <button onClick="put()">PUT</button>
+        <button onClick="del()">DELETE</button>
+    </div>
+
+    <script src="static/wasm_exec.js"></script>
+    <script>
+        const go = new Go();
+        WebAssembly.instantiateStreaming(fetch("static/gohttp.wasm"), go.importObject)
+            .then((result) => {
+                go.run(result.instance)
+                console.log(GetVersion())
+                SetBaseAddress('http://127.0.0.1:9999');
+                SetTimeout(15);
+                SetHeader("ZXP-DEMO", "test_header");
+            });
+
+        async function post() {
+            params = {"a":99, "b":"abc"};
+            var resp = await Post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8");
+            console.log(resp);
+            if (resp.err_code != 0) {
+                alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+                return;
+            }
+            alert(`code: ${resp.status_code} status: ${resp.status}`);
+        }
+
+        async function get() {
+            params = {"a":99, "b":"abc"};
+            var resp = await Get('/v1/get', JSON.stringify(params));
+            console.log(resp);
+            if (resp.err_code != 0) {
+                alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+                return;
+            }
+            alert(`code: ${resp.status_code} status: ${resp.status}`);
+        }
+
+        async function put() {
+            params = {"a":99, "b":"abc"};
+            var resp = await Put('/v1/put', JSON.stringify(params));
+            console.log(resp);
+            if (resp.err_code != 0) {
+                alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+                return;
+            }
+            alert(`code: ${resp.status_code} status: ${resp.status}`);
+        }
+
+        async function del() {
+            params = {"a":99, "b":"abc"};
+            var resp = await Delete('/v1/delete', JSON.stringify(params));
+            console.log(resp);
+            if (resp.err_code != 0) {
+                alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+                return;
+            }
+            alert(`code: ${resp.status_code} status: ${resp.status}`);
+        }
+    </script>
+</body>
+
+</html>

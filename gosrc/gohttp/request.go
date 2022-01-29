@@ -6,17 +6,24 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 /* 几种http请求 */
 
 func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData *ResponseData) {
-	log.Println("开始处理请求", requestData.Url)
-	defer log.Println("结束处理请求", requestData.Url)
+	Log("开始处理请求", requestData.Url)
+	defer Log("结束处理请求", requestData.Url)
+
+	startTime := time.Now()
+	defer func() {
+		if responseData != nil {
+			responseData.TotalTime = time.Since(startTime)
+		}
+	}()
 
 	method = strings.ToUpper(method)
 	reqUrl := gh.getFullUrl(requestData.Url)
@@ -32,7 +39,7 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	case "DELETE":
 		reqUrl, responseData = gh.DELETE(requestData)
 	default:
-		log.Println("不支持的请求类型")
+		Log("不支持的请求类型")
 		return MethodError
 	}
 	if responseData != nil {
@@ -60,11 +67,11 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 		req.Header.Set("Content-Type", contentType)
 	}
 	js, _ := json.Marshal(req.Header)
-	log.Println(string(js))
+	Log(string(js))
 
 	resp, err := gh.Client.Do(req)
 	if err != nil {
-		log.Println(err)
+		Log(err)
 		return &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
@@ -93,7 +100,7 @@ func (gh *GoHttp) POST(requestData *RequestData) (contentType string, body io.Re
 func (gh *GoHttp) GET(requestData *RequestData) (string, *ResponseData) {
 	urlInfo, err := url.Parse(gh.getFullUrl(requestData.Url))
 	if err != nil {
-		log.Println("解析get请求url格式错误", requestData.Url, err)
+		Log("解析get请求url格式错误", requestData.Url, err)
 		return "", &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
@@ -129,7 +136,7 @@ func (gh *GoHttp) PUT(requestData *RequestData) (contentType string, body io.Rea
 func (gh *GoHttp) DELETE(requestData *RequestData) (string, *ResponseData) {
 	urlInfo, err := url.Parse(gh.getFullUrl(requestData.Url))
 	if err != nil {
-		log.Println("解析get请求url格式错误", requestData.Url, err)
+		Log("解析get请求url格式错误", requestData.Url, err)
 		return "", &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
@@ -153,7 +160,7 @@ func (gh *GoHttp) ResponseToResponseData(resp *http.Response) *ResponseData {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err)
+		Log(err)
 		return ResponseReadError
 	}
 	return &ResponseData{
@@ -183,7 +190,7 @@ func (gh *GoHttp) requestParamsToJsonStr(params map[string]interface{}) io.Reade
 	}
 	body, err := json.Marshal(params)
 	if err != nil {
-		log.Println("请求参数转json错误", err)
+		Log("请求参数转json错误", err)
 	}
 	return bytes.NewReader(body)
 }

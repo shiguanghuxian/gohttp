@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"gohttp/gosrc/gohttp"
-	"log"
 )
 
 /* 导出C函数 */
@@ -41,7 +40,7 @@ func SetHeader(in *string) {
 	header := make(map[string]string)
 	err := json.Unmarshal([]byte(*in), &header)
 	if err != nil {
-		log.Println("设置请求头，参数解析错误", *in)
+		gohttp.Log("设置请求头，参数解析错误", *in)
 		return
 	}
 	for k, v := range header {
@@ -76,13 +75,13 @@ func Request(method *string, in *string) *C.char {
 
 // 具体解析数据调用
 func request(method string, in *string) (out *C.char) {
-	log.Println("请求参数", *in)
+	gohttp.Log("请求参数", *in)
 	// 返回数据
 	var responseData *gohttp.ResponseData
 	defer func() {
 		data, err := json.Marshal(responseData)
 		if err != nil {
-			log.Println("响应数据，json编码错误")
+			gohttp.Log("响应数据，json编码错误")
 		}
 		out = C.CString(string(data))
 	}()
@@ -102,7 +101,7 @@ func strToRequestData(in string) (*gohttp.RequestData, *gohttp.ResponseData) {
 	requestData := new(gohttp.RequestData)
 	err := json.Unmarshal([]byte(in), requestData)
 	if err != nil {
-		log.Println("解析入参错误", in, err)
+		gohttp.Log("解析入参错误", in, err)
 		return nil, gohttp.ParameterError
 	}
 	return requestData, nil

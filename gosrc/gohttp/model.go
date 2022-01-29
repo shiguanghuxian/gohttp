@@ -1,5 +1,7 @@
 package gohttp
 
+import "time"
+
 /* 数据模型 */
 
 // 导出c函数请求参数
@@ -12,9 +14,10 @@ type RequestData struct {
 
 // 导出c函数响应json字符串
 type ResponseData struct {
-	Err        string `json:"err"`         // 是否遇到错误
-	ErrCode    int32  `json:"err_code"`    // 错误代码
-	Status     string `json:"status"`      // e.g. "200 OK"
-	StatusCode int    `json:"status_code"` // e.g. 200
-	Body       string `json:"body"`        // 响应内容
+	Err        string        `json:"err"`         // 是否遇到错误
+	ErrCode    int32         `json:"err_code"`    // 错误代码
+	Status     string        `json:"status"`      // e.g. "200 OK"
+	StatusCode int           `json:"status_code"` // e.g. 200
+	Body       string        `json:"body"`        // 响应内容
+	TotalTime  time.Duration `json:"total_time"`  // 总耗时 包括go数据处理和http请求耗时
 }

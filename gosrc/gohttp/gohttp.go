@@ -14,6 +14,8 @@ var (
 	BUILD_TIME = ""
 	GO_VERSION = ""
 	GIT_HASH   = ""
+
+	DEBUG = "true" // 是否打印日志
 )
 
 const (
