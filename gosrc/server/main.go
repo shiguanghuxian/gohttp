@@ -175,10 +175,9 @@ func post(c *gin.Context) {
 }
 
 func put(c *gin.Context) {
-	var data interface{}
-	err := c.ShouldBindQuery(&data)
-	if err != nil {
-		log.Println("post解析参数错误", err)
+	data := map[string]interface{}{
+		"a": c.PostForm("a"),
+		"b": c.PostForm("b"),
 	}
 	c.JSON(http.StatusOK, &Msg{
 		Code:    1,

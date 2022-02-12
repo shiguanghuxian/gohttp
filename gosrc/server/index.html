@@ -53,7 +53,7 @@
 
         async function put() {
             params = {"a":99, "b":"abc"};
-            var resp = await Put('/v1/put', JSON.stringify(params));
+            var resp = await Put('/v1/put', JSON.stringify(params), null, "application/x-www-form-urlencoded", true);
             console.log(resp);
             if (resp.err_code != 0) {
                 alert(`err: ${resp.err} err_code: ${resp.err_code}`);

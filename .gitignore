@@ -28,3 +28,4 @@
 .packages
 build/
 gosrc/export_c/gohttp
+gosrc/server/server-demo
