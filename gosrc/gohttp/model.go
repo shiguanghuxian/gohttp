@@ -10,6 +10,7 @@ type RequestData struct {
 	Params      map[string]interface{} `json:"params"`       // get 或 post 参数
 	Header      map[string]string      `json:"header"`       // 请求头
 	ContentType string                 `json:"content_type"` // post或put请求body类型
+	Encrypt     bool                   `json:"encrypt"`      // 是否加密请求 服务端限制某些接口必须加密请求
 }
 
 // 导出c函数响应json字符串

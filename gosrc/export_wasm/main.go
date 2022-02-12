@@ -151,7 +151,12 @@ func request(method string, args []js.Value) interface{} {
 		contentType = args[3].String()
 	}
 
-	gohttp.Log("请求", url, params, header, contentType)
+	var isEncrypt bool
+	if len(args) > 4 {
+		isEncrypt = args[4].Bool()
+	}
+
+	gohttp.Log("请求", url, params, header, contentType, isEncrypt)
 
 	handler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		resolve := args[0] // 成功返回
@@ -162,6 +167,7 @@ func request(method string, args []js.Value) interface{} {
 				Params:      params,
 				Header:      header,
 				ContentType: contentType,
+				Encrypt:     isEncrypt,
 			})
 			data := map[string]interface{}{
 				"err":         responseData.Err,

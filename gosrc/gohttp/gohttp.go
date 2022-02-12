@@ -23,6 +23,12 @@ const (
 
 	JsonContentType = "application/json; charset=utf-8"   // json 请求类型
 	FormContentType = "application/x-www-form-urlencoded" // 表单请求类型
+
+	HeaderVersion   = "X-GOHTTP-VERSION"   // gohttp版本
+	HeaderBuildTime = "X-GOHTTP-BUILDTIME" // gohttp编译时间
+	HeaderTime      = "X-GOHTTP-TIME"      // 请求时间
+	HeaderSign      = "X-GOHTTP-SIGN"      // 签名
+	HeaderEncrypt   = "X-GOHTTP-ENCRYPT"   // 参数是否加密 YES表示加密
 )
 
 // TODO cookie的持久化
@@ -37,8 +43,8 @@ type GoHttp struct {
 
 func NewGoHttp() *GoHttp {
 	header := make(map[string]string)
-	header["GOHTTP-Version"] = VERSION
-	// header["GOHTTP-BuildTime"] = BUILD_TIME
+	header[HeaderVersion] = VERSION
+	header[HeaderBuildTime] = BUILD_TIME
 
 	cookieJar, _ := cookiejar.New(nil)
 

@@ -2,6 +2,7 @@ package gohttp
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +11,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/wumansgy/goEncrypt"
 )
 
 /* 几种http请求 */
@@ -45,6 +48,20 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	if responseData != nil {
 		return
 	}
+
+	// 签名
+	signT, signStr := gh.signature(reqUrl, method, requestData)
+
+	// 参数加密
+	if requestData.Encrypt {
+		switch method {
+		case "POST", "PUT":
+			body = gh.encryptBodyParams(body, signStr)
+		case "GET", "DELETE":
+			reqUrl = gh.encryptUrlParams(reqUrl, signStr)
+		}
+	}
+
 	req, err := http.NewRequest(method, reqUrl, body)
 	if err != nil {
 		return &ResponseData{
@@ -66,6 +83,16 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	if contentType != "" {
 		req.Header.Set("Content-Type", contentType)
 	}
+
+	// 签名头
+	req.Header.Set(HeaderTime, signT)
+	req.Header.Set(HeaderSign, signStr)
+
+	// 标记加密
+	if requestData.Encrypt {
+		req.Header.Set(HeaderEncrypt, "YES")
+	}
+
 	js, _ := json.Marshal(req.Header)
 	Log(string(js))
 
@@ -86,12 +113,8 @@ func (gh *GoHttp) POST(requestData *RequestData) (contentType string, body io.Re
 		contentType = JsonContentType
 		body = gh.requestParamsToJsonStr(requestData.Params)
 	} else {
-		data := url.Values{}
-		for k, v := range requestData.Params {
-			data.Set(k, fmt.Sprint(v))
-		}
-		body = strings.NewReader(data.Encode())
 		contentType = FormContentType
+		body = gh.requestParamsToFormStr(requestData.Params)
 	}
 	return
 }
@@ -122,12 +145,8 @@ func (gh *GoHttp) PUT(requestData *RequestData) (contentType string, body io.Rea
 		contentType = JsonContentType
 		body = gh.requestParamsToJsonStr(requestData.Params)
 	} else {
-		data := url.Values{}
-		for k, v := range requestData.Params {
-			data.Set(k, fmt.Sprint(v))
-		}
-		body = strings.NewReader(data.Encode())
 		contentType = FormContentType
+		body = gh.requestParamsToFormStr(requestData.Params)
 	}
 	return
 }
@@ -193,4 +212,79 @@ func (gh *GoHttp) requestParamsToJsonStr(params map[string]interface{}) io.Reade
 		Log("请求参数转json错误", err)
 	}
 	return bytes.NewReader(body)
+}
+
+// post或put form请求body
+func (gh *GoHttp) requestParamsToFormStr(params map[string]interface{}) io.Reader {
+	if len(params) == 0 {
+		return bytes.NewReader(nil)
+	}
+	data := url.Values{}
+	for k, v := range params {
+		data.Set(k, fmt.Sprint(v))
+	}
+	return strings.NewReader(data.Encode())
+}
+
+// 计算签名，返回计算后的签名和头信息
+func (gh *GoHttp) signature(reqUrl string, method string, requestData *RequestData) (t string, sign string) {
+	params := make(map[string]string)
+	if method == "POST" || method == "PUT" {
+		for k, v := range requestData.Params {
+			params[k] = fmt.Sprint(v)
+		}
+	} else {
+		urlInfo, err := url.Parse(gh.getFullUrl(reqUrl))
+		if err != nil {
+			Log("签名计算解析get请求url格式错误", reqUrl, err)
+		}
+		queryParams := urlInfo.Query()
+		for k, v := range queryParams {
+			if len(v) == 0 {
+				continue
+			}
+			params[k] = v[0]
+		}
+	}
+	// 16进制时间戳
+	t = strings.ToUpper(fmt.Sprintf("%x", time.Now().Unix()))
+	sign = Signature(params, t)
+	return
+}
+
+// 加密get或delete的url参数
+func (gh *GoHttp) encryptUrlParams(reqUrl string, sign string) string {
+	urlInfo, err := url.Parse(gh.getFullUrl(reqUrl))
+	if err != nil {
+		Log("加密，解析get请求url格式错误", reqUrl, err)
+		return reqUrl
+	}
+	q, err := goEncrypt.AesCbcEncrypt([]byte(urlInfo.RawQuery), GetEncryptKey(sign), GetEncryptIv(sign))
+	if err != nil {
+		Log("aes加密错误url", reqUrl, sign, err)
+		return reqUrl
+	}
+	// 只保留q参数
+	data := url.Values{}
+	data.Set("q", hex.EncodeToString(q))
+	urlInfo.RawQuery = data.Encode()
+	return urlInfo.String()
+}
+
+// 加密请求体
+func (gh *GoHttp) encryptBodyParams(body io.Reader, sign string) io.Reader {
+	if body == nil {
+		return nil
+	}
+	bodyVal, err := ioutil.ReadAll(body)
+	if err != nil {
+		Log("加密读取body错误", err)
+		return nil
+	}
+	q, err := goEncrypt.AesCbcEncrypt(bodyVal, GetEncryptKey(sign), GetEncryptIv(sign))
+	if err != nil {
+		Log("aes加密错误body", sign, err)
+		return bytes.NewBuffer(bodyVal)
+	}
+	return bytes.NewBuffer(q)
 }

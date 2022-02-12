@@ -31,7 +31,7 @@
 
         async function post() {
             params = {"a":99, "b":"abc"};
-            var resp = await Post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8");
+            var resp = await Post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8", true);
             console.log(resp);
             if (resp.err_code != 0) {
                 alert(`err: ${resp.err} err_code: ${resp.err_code}`);
@@ -41,8 +41,8 @@
         }
 
         async function get() {
-            params = {"a":99, "b":"abc"};
-            var resp = await Get('/v1/get', JSON.stringify(params));
+            params = {"a":99, "b":"100f4d4aa98f70d821e58a9c5e813b87100f4d4aa98f70d821e58a9c5e813b87100f4d4aa98f70d821e58a9c5e813b87"};
+            var resp = await Get('/v1/get', JSON.stringify(params), null, "", true);
             console.log(resp);
             if (resp.err_code != 0) {
                 alert(`err: ${resp.err} err_code: ${resp.err_code}`);
