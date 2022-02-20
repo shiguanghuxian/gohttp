@@ -18,8 +18,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    
-    _showVersion();
   }
 
   @override
@@ -29,13 +27,59 @@ class _HomePageState extends State<HomePage> {
 
   void _showVersion() async {
     // 输出版本信息
-    String version = await publicHttp.getVersion();
-    log('gohttp版本: ${version}');
+    dynamic version = publicHttp.getVersion();
+    log('gohttp版本: ${version.version}');
+
+    String dateStr =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(version.buildTime) * 1000)
+            .toString();
+    EasyLoading.showInfo(
+        "版本：${version.version}\nGO版本：${version.goVersion}\ngit hash：${version.gitHash}\n构建时间：$dateStr");
   }
 
   void _post() async {
-    ResponseData respJson = await publicHttp.post('/v1/demo');
-    EasyLoading.showInfo("code: ${respJson.statusCode} \n status: ${respJson.status}");
+    ResponseData respJson = await publicHttp.post(
+      '/v1/post',
+      params: {
+        "a": 1,
+        "b": "bbb",
+      },
+      contentType: 'application/json; charset=utf-8',
+      encrypt: true,
+    );
+    EasyLoading.showInfo(
+        "code: ${respJson.statusCode} \n status: ${respJson.status} \n ${respJson.body}");
+  }
+
+  void _get() async {
+    ResponseData respJson = await publicHttp.get(
+      '/v1/get',
+      params: {
+        "a": 2,
+        "b": "bbb",
+      },
+      encrypt: true,
+    );
+    EasyLoading.showInfo(
+        "code: ${respJson.statusCode} \n status: ${respJson.status} \n ${respJson.body}");
+  }
+
+  void _put() async {
+    ResponseData respJson = await publicHttp.put('/v1/put', params: {
+      "a": 3,
+      "b": "bbb",
+    });
+    EasyLoading.showInfo(
+        "code: ${respJson.statusCode} \n status: ${respJson.status} \n ${respJson.body}");
+  }
+
+  void _delete() async {
+    ResponseData respJson = await publicHttp.delete('/v1/delete', params: {
+      "a": 5,
+      "b": "bbb",
+    });
+    EasyLoading.showInfo(
+        "code: ${respJson.statusCode} \n status: ${respJson.status} \n ${respJson.body}");
   }
 
   @override
@@ -48,20 +92,50 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: ListView(
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             TextButton(
               onPressed: () {
-                log('点击按钮');
+                _showVersion();
+              },
+              child: const Text('Version'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              onPressed: () {
                 _post();
               },
               child: const Text('POST'),
             ),
-            SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             TextButton(
               onPressed: () {
-                log('点击按钮');
-                _post();
+                _get();
               },
-              child: const Text('POST'),
+              child: const Text('GET'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              onPressed: () {
+                _put();
+              },
+              child: const Text('PUT'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              onPressed: () {
+                _delete();
+              },
+              child: const Text('DELETE'),
             ),
           ],
         ),

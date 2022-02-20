@@ -26,14 +26,19 @@ class Http {
   }
 
   // 获取gohttp版本信息
-  getVersion() async {
+  GoHttpVersion getVersion() {
     Pointer<Int8> version = goGetVersion();
-    return version.cast<Utf8>().toDartString();
+    String versionStr = version.cast<Utf8>().toDartString();
+    Map<String, dynamic> map = json.decode(versionStr);
+    return GoHttpVersion.fromJson(map);
   }
 
   // post 请求
   post(String url,
-      {Map<String, dynamic>? params, Map<String, String>? header}) async {
+      {Map<String, dynamic>? params,
+      Map<String, String>? header,
+      String? contentType,
+      bool? encrypt}) async {
     String respJson = await compute<Map<String, dynamic>, String>((data) {
       String dataStr = json.encode(data);
       Pointer<Int8> resp = goPost(GoString.fromString(dataStr));
@@ -43,6 +48,8 @@ class Http {
       'url': url,
       'params': params,
       'header': header,
+      'content_type': contentType,
+      'encrypt': encrypt,
     });
     log('响应' + respJson);
     return toResponseData(respJson);
@@ -50,7 +57,10 @@ class Http {
 
   // get 请求
   get(String url,
-      {Map<String, dynamic>? params, Map<String, String>? header}) async {
+      {Map<String, dynamic>? params,
+      Map<String, String>? header,
+      String? contentType,
+      bool? encrypt}) async {
     String respJson = await compute<Map<String, dynamic>, String>((data) {
       String dataStr = json.encode(data);
       Pointer<Int8> resp = goGet(GoString.fromString(dataStr));
@@ -60,6 +70,52 @@ class Http {
       'url': url,
       'params': params,
       'header': header,
+      'content_type': contentType,
+      'encrypt': encrypt,
+    });
+    log('响应' + respJson);
+    return toResponseData(respJson);
+  }
+
+  // put 请求
+  put(String url,
+      {Map<String, dynamic>? params,
+      Map<String, String>? header,
+      String? contentType,
+      bool? encrypt}) async {
+    String respJson = await compute<Map<String, dynamic>, String>((data) {
+      String dataStr = json.encode(data);
+      Pointer<Int8> resp = goPut(GoString.fromString(dataStr));
+      String respJson = resp.cast<Utf8>().toDartString();
+      return respJson;
+    }, {
+      'url': url,
+      'params': params,
+      'header': header,
+      'content_type': contentType,
+      'encrypt': encrypt,
+    });
+    log('响应' + respJson);
+    return toResponseData(respJson);
+  }
+
+  // delete 请求
+  delete(String url,
+      {Map<String, dynamic>? params,
+      Map<String, String>? header,
+      String? contentType,
+      bool? encrypt}) async {
+    String respJson = await compute<Map<String, dynamic>, String>((data) {
+      String dataStr = json.encode(data);
+      Pointer<Int8> resp = goDelete(GoString.fromString(dataStr));
+      String respJson = resp.cast<Utf8>().toDartString();
+      return respJson;
+    }, {
+      'url': url,
+      'params': params,
+      'header': header,
+      'content_type': contentType,
+      'encrypt': encrypt,
     });
     log('响应' + respJson);
     return toResponseData(respJson);

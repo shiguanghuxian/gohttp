@@ -7,6 +7,7 @@ const (
 	CodeMethodError       = 80000
 	CodeParameterError    = 80001
 	CodeResponseReadError = 80002
+	CodeResponseLimiter   = 80003
 )
 
 var (
@@ -21,5 +22,9 @@ var (
 	MethodError = &ResponseData{
 		Err:     "不支持的请求类型",
 		ErrCode: CodeMethodError,
+	}
+	LimiterError = &ResponseData{
+		Err:     "请求限流，访问频繁",
+		ErrCode: CodeResponseLimiter,
 	}
 )

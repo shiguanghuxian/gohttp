@@ -108,12 +108,16 @@ func strToRequestData(in string) (*gohttp.RequestData, *gohttp.ResponseData) {
 }
 
 func main() {
-	version := map[string]string{
-		"version":    gohttp.VERSION,
-		"build_time": gohttp.BUILD_TIME,
-		"go_version": gohttp.GO_VERSION,
-		"git_hash":   gohttp.GIT_HASH,
+	if gohttp.DEBUG == "true" {
+		version := map[string]string{
+			"version":    gohttp.VERSION,
+			"build_time": gohttp.BUILD_TIME,
+			"go_version": gohttp.GO_VERSION,
+			"git_hash":   gohttp.GIT_HASH,
+		}
+		data, _ := json.Marshal(version)
+		fmt.Println(string(data))
+	} else {
+		fmt.Println("release")
 	}
-	data, _ := json.Marshal(version)
-	fmt.Println(string(data))
 }

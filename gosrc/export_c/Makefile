@@ -1,6 +1,7 @@
 LIB_NAME=gohttp
 VERSION=`cat '../version'`
-GOBUILD=go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD`"
+GOBUILD=go build -ldflags "-s -w -X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD`"
+GOBUILD_DEBUG=go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD` -X 'gohttp/gosrc/gohttp.DEBUG=true'"
 
 default:
 	@echo 'Usage of make: [ macos | windows | linux | run ]'
@@ -9,7 +10,7 @@ run: build
 	./${LIB_NAME}
 
 build:
-	${GOBUILD} -o ${LIB_NAME} *.go
+	${GOBUILD_DEBUG} -o ${LIB_NAME} *.go
 
 macos: 
 	GOOS=darwin GOARCH=amd64 ${GOBUILD} -o bin/macos/${LIB_NAME}.dylib -buildmode=c-shared *.go

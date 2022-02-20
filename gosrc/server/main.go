@@ -12,19 +12,21 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/wumansgy/goEncrypt"
 )
 
 // 模拟数据返回
 type Msg struct {
-	Code    int32
-	Message string
-	Data    interface{}
+	Code    int32       `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 func main() {
 	ginEngine := gin.Default()
+	ginEngine.Use(gzip.Gzip(gzip.DefaultCompression))
 	ginEngine.Static("/demo", "./")
 
 	ginEngine.Use(decryptParams())  // 参数加密
@@ -107,6 +109,9 @@ func decryptParams() gin.HandlerFunc {
 		if strings.ToUpper(isEncrypt) != "YES" {
 			return
 		}
+
+		log.Println("使用加密参数模式")
+
 		signStr := c.GetHeader(gohttp.HeaderSign)
 		if len(signStr) != 32 {
 			c.AbortWithStatus(http.StatusUnauthorized)

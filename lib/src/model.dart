@@ -28,3 +28,29 @@ class ResponseData {
     return data;
   }
 }
+
+class GoHttpVersion {
+  String? buildTime;
+  String? gitHash;
+  String? goVersion;
+  String? version;
+
+  GoHttpVersion({this.buildTime, this.gitHash, this.goVersion, this.version});
+
+  GoHttpVersion.fromJson(Map<String, dynamic> json) {
+    buildTime = json['build_time'];
+    gitHash = json['git_hash'];
+    goVersion = json['go_version'];
+    version = json['version'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['build_time'] = buildTime;
+    data['git_hash'] = gitHash;
+    data['go_version'] = goVersion;
+    data['version'] = version;
+    return data;
+  }
+}
+

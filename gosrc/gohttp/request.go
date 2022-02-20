@@ -28,6 +28,13 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 		}
 	}()
 
+	// 限流
+	limitErr := gh.requestLimiter()
+	if limitErr != nil {
+		responseData = limitErr
+		return
+	}
+
 	method = strings.ToUpper(method)
 	reqUrl := gh.getFullUrl(requestData.Url)
 	var body io.Reader
