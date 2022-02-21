@@ -1,8 +1,24 @@
 part of gohttp;
 
 DynamicLibrary lib = Platform.isMacOS
-    ? DynamicLibrary.open('gohttp.dylib')
-    : getDyLibModule('lib/api/gohttp/bin/gohttp-macos.dylib');
+    ? DynamicLibrary.open(getGoHttpLibPath())
+    : getDyLibModule(getGoHttpLibPath());
+
+String getGoHttpLibPath() {
+  if (Platform.isMacOS) {
+    return 'gohttp.dylib';
+  }
+  if (Platform.isWindows) {
+    return 'gosrc/export_c/bin/windows/gohttp.dll';
+  }
+  if (Platform.isIOS) {
+    return 'gosrc/export_c/bin/ios/gohttp.dylib';
+  }
+  if (Platform.isAndroid) {
+    return 'gosrc/export_c/bin/ios/gohttp.dylib';
+  }
+  return 'gohttp.dylib';
+}
 
 // 获取gohttp库版本信息
 typedef GetVersionFunc = Pointer<Int8> Function();
@@ -12,9 +28,8 @@ GetVersionFunc goGetVersion = lib
 
 // 设置超时
 typedef SetTimeoutFunc = void Function(int);
-SetTimeoutFunc goSetTimeout = lib
-    .lookup<NativeFunction<Void Function(Int64)>>('SetTimeout')
-    .asFunction();
+SetTimeoutFunc goSetTimeout =
+    lib.lookup<NativeFunction<Void Function(Int64)>>('SetTimeout').asFunction();
 
 // 设置请求根地址
 typedef SetBaseAddressFunc = void Function(Pointer<GoString>);
