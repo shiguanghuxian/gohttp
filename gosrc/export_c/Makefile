@@ -2,6 +2,7 @@ LIB_NAME=gohttp
 VERSION=`cat '../version'`
 GOBUILD=go build -ldflags "-s -w -X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD`"
 GOBUILD_DEBUG=go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD` -X 'gohttp/gosrc/gohttp.DEBUG=true'"
+ANDROID_NDK_HOME=${HOME}/Library/Android/sdk/ndk/23.1.7779620
 
 default:
 	@echo 'Usage of make: [ macos | windows | linux | run ]'
@@ -36,7 +37,11 @@ ios-x86_64:
 	cp bin/ios/${LIB_NAME}.dylib ../../example/ios/dylib
 
 android: 
-	CGO_ENABLED=1 GOOS=linux GOARCH=arm64 ${GOBUILD} -o bin/android/${LIB_NAME}.so -buildmode=c-shared *.go
+	CC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang \
+	CGO_ENABLED=1 GOOS=android GOARCH=arm ${GOBUILD} -o bin/android/armeabi-v7a/${LIB_NAME}.so -buildmode=c-shared *.go \
+
+	CC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang \
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 ${GOBUILD} -o bin/android/arm64-v8a/${LIB_NAME}.so -buildmode=c-shared *.go
 
 linux: 
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 ${GOBUILD} -o bin/linux/${LIB_NAME}.so -buildmode=c-shared *.go

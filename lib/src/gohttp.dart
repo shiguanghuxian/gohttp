@@ -2,7 +2,9 @@ part of gohttp;
 
 DynamicLibrary lib = Platform.isMacOS
     ? DynamicLibrary.open(getGoHttpLibPath())
-    : getDyLibModule(getGoHttpLibPath());
+    : Platform.isIOS
+        ? DynamicLibrary.open(getGoHttpLibPath())
+        : getDyLibModule(getGoHttpLibPath());
 
 String getGoHttpLibPath() {
   if (Platform.isMacOS) {
@@ -12,10 +14,10 @@ String getGoHttpLibPath() {
     return 'gosrc/export_c/bin/windows/gohttp.dll';
   }
   if (Platform.isIOS) {
-    return 'gosrc/export_c/bin/ios/gohttp.dylib';
+    return 'gohttp.dylib';
   }
   if (Platform.isAndroid) {
-    return 'gosrc/export_c/bin/ios/gohttp.dylib';
+    return 'gosrc/export_c/bin/android/arm64-v8a/gohttp.so';
   }
   return 'gohttp.dylib';
 }
