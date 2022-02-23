@@ -1,25 +1,24 @@
 part of gohttp;
 
-DynamicLibrary lib = Platform.isMacOS
+DynamicLibrary lib = Platform.isMacOS || Platform.isIOS || Platform.isAndroid
     ? DynamicLibrary.open(getGoHttpLibPath())
-    : Platform.isIOS
-        ? DynamicLibrary.open(getGoHttpLibPath())
-        : getDyLibModule(getGoHttpLibPath());
+    : getDyLibModule(getGoHttpLibPath());
+
 
 String getGoHttpLibPath() {
   if (Platform.isMacOS) {
-    return 'gohttp.dylib';
+    return 'libgohttp.dylib';
   }
   if (Platform.isWindows) {
-    return 'gosrc/export_c/bin/windows/gohttp.dll';
+    return 'gosrc/export_c/bin/windows/libgohttp.dll';
   }
   if (Platform.isIOS) {
-    return 'gohttp.dylib';
+    return 'libgohttp.dylib';
   }
   if (Platform.isAndroid) {
-    return 'gosrc/export_c/bin/android/arm64-v8a/gohttp.so';
+    return 'libgohttp.so';
   }
-  return 'gohttp.dylib';
+  return 'libgohttp.so';
 }
 
 // 获取gohttp库版本信息

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,20 +13,20 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		AEE65A9727C3CFB000992D12 /* gohttp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AEE65A9627C3CFB000992D12 /* gohttp.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AEE65A9827C3CFB000992D12 /* gohttp.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AEE65A9627C3CFB000992D12 /* gohttp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AE0F27A827C6062A00DBD6E7 /* libgohttp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AE0F27A727C6062A00DBD6E7 /* libgohttp.dylib */; platformFilter = ios; settings = {ATTRIBUTES = (Weak, ); }; };
+		AE0F27A927C6062A00DBD6E7 /* libgohttp.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = AE0F27A727C6062A00DBD6E7 /* libgohttp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
+		AE0F27AA27C6062A00DBD6E7 /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AEE65A9827C3CFB000992D12 /* gohttp.dylib in Embed Frameworks */,
+				AE0F27A927C6062A00DBD6E7 /* libgohttp.dylib in Embed Libraries */,
 			);
-			name = "Embed Frameworks";
+			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -45,6 +45,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE0F27A727C6062A00DBD6E7 /* libgohttp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgohttp.dylib; path = dylib/libgohttp.dylib; sourceTree = "<group>"; };
 		AEE65A9627C3CFB000992D12 /* gohttp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = gohttp.dylib; path = dylib/gohttp.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,7 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEE65A9727C3CFB000992D12 /* gohttp.dylib in Frameworks */,
+				AE0F27A827C6062A00DBD6E7 /* libgohttp.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +108,7 @@
 		AEE65A9527C3CFB000992D12 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE0F27A727C6062A00DBD6E7 /* libgohttp.dylib */,
 				AEE65A9627C3CFB000992D12 /* gohttp.dylib */,
 			);
 			name = Frameworks;
@@ -123,8 +125,8 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
+				AE0F27AA27C6062A00DBD6E7 /* Embed Libraries */,
 			);
 			buildRules = (
 			);

@@ -20,7 +20,7 @@
     <script src="static/wasm_exec.js"></script>
     <script>
         const go = new Go();
-        WebAssembly.instantiateStreaming(fetch("static/gohttp.wasm"), go.importObject)
+        WebAssembly.instantiateStreaming(fetch("static/libgohttp.wasm"), go.importObject)
             .then((result) => {
                 go.run(result.instance)
                 console.log(GetVersion())

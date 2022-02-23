@@ -1,4 +1,4 @@
-LIB_NAME=gohttp
+LIB_NAME=libgohttp
 VERSION=`cat '../version'`
 GOBUILD=go build -ldflags "-s -w -X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD`"
 GOBUILD_DEBUG=go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=$(VERSION) -X 'gohttp/gosrc/gohttp.BUILD_TIME=`date "+%s"`' -X 'gohttp/gosrc/gohttp.GO_VERSION=`go version`' -X gohttp/gosrc/gohttp.GIT_HASH=`git rev-parse HEAD` -X 'gohttp/gosrc/gohttp.DEBUG=true'"
@@ -41,7 +41,19 @@ android:
 	CGO_ENABLED=1 GOOS=android GOARCH=arm ${GOBUILD} -o bin/android/armeabi-v7a/${LIB_NAME}.so -buildmode=c-shared *.go \
 
 	CC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang \
-	CGO_ENABLED=1 GOOS=android GOARCH=arm64 ${GOBUILD} -o bin/android/arm64-v8a/${LIB_NAME}.so -buildmode=c-shared *.go
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 ${GOBUILD} -o bin/android/arm64-v8a/${LIB_NAME}.so -buildmode=c-shared *.go \
+
+	CC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android21-clang \
+	CGO_ENABLED=1 GOOS=android GOARCH=amd64 ${GOBUILD} -o bin/android/x86_64/${LIB_NAME}.so -buildmode=c-shared *.go \
+
+	CC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android21-clang \
+	CGO_ENABLED=1 GOOS=android GOARCH=386 ${GOBUILD} -o bin/android/x86/${LIB_NAME}.so -buildmode=c-shared *.go
+	
+	cp bin/android/x86_64/${LIB_NAME}.so ../../example/android/app/src/main/jniLibs/x86_64
+	cp bin/android/x86/${LIB_NAME}.so ../../example/android/app/src/main/jniLibs/x86
+	cp bin/android/arm64-v8a/${LIB_NAME}.so ../../example/android/app/src/main/jniLibs/arm64-v8a
+	cp bin/android/armeabi-v7a/${LIB_NAME}.so ../../example/android/app/src/main/jniLibs/armeabi-v7a
+	
 
 linux: 
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 ${GOBUILD} -o bin/linux/${LIB_NAME}.so -buildmode=c-shared *.go

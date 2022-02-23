@@ -27,5 +27,9 @@
 .dart_tool/
 .packages
 build/
-gosrc/export_c/gohttp
+gosrc/export_c/libgohttp
 gosrc/server/server-demo
+gosrc/export_c/bin
+example/android/app/src/main/jniLibs
+example/ios/dylib
+example/macos/dylib

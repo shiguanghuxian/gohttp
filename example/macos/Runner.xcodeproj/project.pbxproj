@@ -26,8 +26,8 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
-		AEDB560F27A2768B00162C09 /* gohttp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDB560E27A2768A00162C09 /* gohttp.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		AEDB561027A2768B00162C09 /* gohttp.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = AEDB560E27A2768A00162C09 /* gohttp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AE0F27A427C604F800DBD6E7 /* libgohttp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AE0F27A327C604F800DBD6E7 /* libgohttp.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AE0F27A527C604F800DBD6E7 /* libgohttp.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = AE0F27A327C604F800DBD6E7 /* libgohttp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,15 +41,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		33CC110E2044A8840003C045 /* Bundle Framework */ = {
+		AE0F27A627C604F800DBD6E7 /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AEDB561027A2768B00162C09 /* gohttp.dylib in Bundle Framework */,
+				AE0F27A527C604F800DBD6E7 /* libgohttp.dylib in Embed Libraries */,
 			);
-			name = "Bundle Framework";
+			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -71,6 +71,7 @@
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		AE0F27A327C604F800DBD6E7 /* libgohttp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgohttp.dylib; path = dylib/libgohttp.dylib; sourceTree = "<group>"; };
 		AEDB560E27A2768A00162C09 /* gohttp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = gohttp.dylib; path = dylib/gohttp.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEDB560F27A2768B00162C09 /* gohttp.dylib in Frameworks */,
+				AE0F27A427C604F800DBD6E7 /* libgohttp.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +154,7 @@
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AE0F27A327C604F800DBD6E7 /* libgohttp.dylib */,
 				AEDB560E27A2768A00162C09 /* gohttp.dylib */,
 			);
 			name = Frameworks;
@@ -168,8 +170,8 @@
 				33CC10E92044A3C60003C045 /* Sources */,
 				33CC10EA2044A3C60003C045 /* Frameworks */,
 				33CC10EB2044A3C60003C045 /* Resources */,
-				33CC110E2044A8840003C045 /* Bundle Framework */,
 				3399D490228B24CF009A79C7 /* ShellScript */,
+				AE0F27A627C604F800DBD6E7 /* Embed Libraries */,
 			);
 			buildRules = (
 			);

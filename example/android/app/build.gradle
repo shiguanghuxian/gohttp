@@ -39,6 +39,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        main.jniLibs.srcDirs += 'src/main/jniLibs'
     }
 
     defaultConfig {
@@ -55,6 +56,30 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            ndk {
+                abiFilters 'arm64-v8a', 'x86_64', 'x86'
+                // if (project.hasProperty('target-platform') &&
+                //         project.property('target-platform') == 'android-arm64') {
+                //     abiFilters 'arm64-v8a'
+                // } else {
+                //     abiFilters 'armeabi-v7a'
+                // }
+            }
+        }
+
+        debug {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            ndk {
+                abiFilters 'arm64-v8a', 'x86_64', 'x86'
+                // if (project.hasProperty('target-platform') &&
+                //         project.property('target-platform') == 'android-arm64') {
+                //     abiFilters 'arm64-v8a'
+                // } else {
+                //     abiFilters 'armeabi-v7a'
+                // }
+            }
         }
     }
 }
