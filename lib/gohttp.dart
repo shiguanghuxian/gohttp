@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:call/ffi.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 

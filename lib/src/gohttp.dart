@@ -1,21 +1,15 @@
 part of gohttp;
 
-DynamicLibrary lib = Platform.isMacOS || Platform.isIOS || Platform.isAndroid
-    ? DynamicLibrary.open(getGoHttpLibPath())
-    : getDyLibModule(getGoHttpLibPath());
-
+DynamicLibrary lib = DynamicLibrary.open(getGoHttpLibPath());
 
 String getGoHttpLibPath() {
-  if (Platform.isMacOS) {
+  if (Platform.isMacOS || Platform.isIOS) {
     return 'libgohttp.dylib';
   }
   if (Platform.isWindows) {
-    return 'gosrc/export_c/bin/windows/libgohttp.dll';
+    return 'libgohttp.dll';
   }
-  if (Platform.isIOS) {
-    return 'libgohttp.dylib';
-  }
-  if (Platform.isAndroid) {
+  if (Platform.isAndroid || Platform.isLinux) {
     return 'libgohttp.so';
   }
   return 'libgohttp.so';
