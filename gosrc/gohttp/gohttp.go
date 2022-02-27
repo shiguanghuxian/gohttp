@@ -2,6 +2,7 @@ package gohttp
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"strconv"
@@ -25,6 +26,15 @@ var (
 	RATE_LIMIT_LIMIT = "15"   // 限流每秒产生token数
 	RATE_LIMIT_BURST = "15"   // 限流桶大小
 )
+
+func init() {
+	if len(BUILD_TIME) == 13 {
+		t1, _ := strconv.Atoi(BUILD_TIME)
+		if t1 > 0 {
+			BUILD_TIME = fmt.Sprint(t1 / 1000)
+		}
+	}
+}
 
 const (
 	DefaultTimeout = 30 // 默认请求超时30秒

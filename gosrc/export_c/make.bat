@@ -28,7 +28,11 @@ goto :eof
 :build
 for /f "delims=" %%i in ('go version') do (set go_version=%%i)
 for /f "delims=" %%i in ('git rev-parse HEAD') do (set git_hash=%%i)
-@go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=1.0.0 -X 'gohttp/gosrc/gohttp.BUILD_TIME=%DATE% %TIME%' -X 'gohttp/gosrc/gohttp.GO_VERSION=%go_version%' -X gohttp/gosrc/gohttp.GIT_HASH=%git_hash%" -o bin\windows\libgohttp.dll ./
+set "$=%temp%\Spring"
+>%$% Echo WScript.Echo((new Date()).getTime())
+for /f %%a in ('cscript -nologo -e:jscript %$%') do set timestamp=%%a
+set GOARCH=amd64
+@go build -ldflags "-X gohttp/gosrc/gohttp.VERSION=1.0.0 -X 'gohttp/gosrc/gohttp.BUILD_TIME=%timestamp%' -X 'gohttp/gosrc/gohttp.GO_VERSION=%go_version%' -X gohttp/gosrc/gohttp.GIT_HASH=%git_hash%" -buildmode=c-shared -o bin\windows\libgohttp.dll ./
 exit /B %ERRORLEVEL%
 
 :clean

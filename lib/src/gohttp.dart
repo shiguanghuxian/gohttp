@@ -7,6 +7,7 @@ String getGoHttpLibPath() {
     return 'libgohttp.dylib';
   }
   if (Platform.isWindows) {
+    log('jiazai dll');
     return 'libgohttp.dll';
   }
   if (Platform.isAndroid || Platform.isLinux) {
