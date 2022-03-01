@@ -33,3 +33,4 @@ gosrc/export_c/bin
 example/android/app/src/main/jniLibs
 example/ios/dylib
 example/macos/dylib
+libgohttp.wasm

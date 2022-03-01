@@ -158,7 +158,9 @@ func request(method string, args []js.Value) interface{} {
 
 	gohttp.Log("请求", url, params, header, contentType, isEncrypt)
 
-	handler := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	var handler js.Func
+	handler = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		handler.Release()
 		resolve := args[0] // 成功返回
 		reject := args[1]  // 错误返回
 		go func() {
@@ -184,7 +186,7 @@ func request(method string, args []js.Value) interface{} {
 				resolve.Invoke(data)
 			}
 		}()
-		return nil
+		return js.Undefined()
 	})
 
 	promiseConstructor := js.Global().Get("Promise")

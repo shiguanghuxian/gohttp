@@ -1,0 +1,17 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="userinfo">
+    <block>
+      <view class="userinfo-avatar" bindtap="bindViewTap">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+      <open-data type="userNickName"></open-data>
+    </block>
+  </view>
+  <view class="gohttp">
+    <view class="http-func" bindtap="bindPost">POST</view>
+    <view class="http-func">GET</view>
+    <view class="http-func">PUT</view>
+    <view class="http-func">DELETE</view>
+  </view>
+</view>
