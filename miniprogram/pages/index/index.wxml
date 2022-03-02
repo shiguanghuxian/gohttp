@@ -9,6 +9,7 @@
     </block>
   </view>
   <view class="gohttp">
+    <view class="http-func" bindtap="bindVersion">Version</view>
     <view class="http-func" bindtap="bindPost">POST</view>
     <view class="http-func">GET</view>
     <view class="http-func">PUT</view>

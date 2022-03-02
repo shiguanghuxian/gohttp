@@ -3,6 +3,7 @@
 const app = getApp()
 
 require('./assets/wasm_exec.js');
+var http = require('./assets/http.js');
 
 Page({
   data: {
@@ -23,7 +24,6 @@ Page({
   },
 
   async initGo() {
-    var _that = this;
     const go = new global.Go();
     try {
       const result = await WXWebAssembly.instantiate('/pages/index/assets/libgohttp.wasm', go.importObject);
@@ -43,19 +43,39 @@ Page({
 
   },
 
+  // 获取版本信息
+  async bindVersion() {
+    const version = http.getVersion();
+    console.log(version);
+  },
+
 
   async bindPost() {
     const params = {
       "a": 99,
       "b": "abc"
     };
-    var resp = await global.Post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8", true);
+    var resp = http.post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8", true);
     console.log(resp);
     if (resp.err_code != 0) {
-      alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+      // alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+      wx.showModal({
+        cancelColor: 'cancelColor',
+        cancelText: 'cancelText',
+        confirmColor: 'confirmColor',
+        confirmText: 'confirmText',
+        content: 'content',
+        editable: true,
+        placeholderText: 'placeholderText',
+        showCancel: true,
+        title: 'title',
+        success: (result) => {},
+        fail: (res) => {},
+        complete: (res) => {},
+      })
       return;
     }
-    alert(`code: ${resp.status_code} status: ${resp.status}`);
+    // alert(`code: ${resp.status_code} status: ${resp.status}`);
   },
 
   async get() {
