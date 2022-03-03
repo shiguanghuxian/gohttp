@@ -1,6 +1,5 @@
 // post 请求
 function post(url, params, header, contentType, isEncrypt) {
-  setBaseAddress('http://127.0.0.1:9999');
   var resp = global.Post(url, params, header, contentType, isEncrypt);
   if (!resp) {
     return {

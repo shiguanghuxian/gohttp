@@ -9,10 +9,10 @@
     </block>
   </view>
   <view class="gohttp">
-    <view class="http-func" bindtap="bindVersion">Version</view>
-    <view class="http-func" bindtap="bindPost">POST</view>
-    <view class="http-func">GET</view>
-    <view class="http-func">PUT</view>
-    <view class="http-func">DELETE</view>
+    <button class="http-func" type="primary" bindtap="bindVersion">Version</button>
+    <button class="http-func" type="primary" bindtap="bindPost">POST</button>
+    <button class="http-func" type="primary" bindtap="bindGET">GET</button>
+    <button class="http-func" type="primary" bindtap="bindPUT">PUT</button>
+    <button class="http-func" type="primary" bindtap="bindDELETE">DELETE</button>
   </view>
 </view>

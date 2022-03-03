@@ -17,10 +17,15 @@ Page({
   },
 
   async onReady() {
+    console.log('onReady');
     // 在小程序基础类库的global对象上，增加console对象。
     global.console = console
     // 使用小程序类库的WXWebAssembly，初始化Go运行环境。
     await this.initGo()
+  },
+
+  onLoad() {
+    console.log('onLoad');
   },
 
   async initGo() {
@@ -31,22 +36,28 @@ Page({
       console.log('initGo99', msg);
 
       // 运行go程序的main()方法
-      await go.run(result.instance);
-      // 注意：在go程序的main()方法退出之前，小程序不会运行到这个位置。
-      console.log('initGo', '运行完成');
+      go.run(result.instance);
+      // 设置基础信息
+      http.setBaseAddress('https://localhost:9999'); // 需https安全域名
+      http.setTimeout(10);
+      http.setHeader("ZXP-DEMO", "test_header");
     } catch (err) {
       console.error('initGo', err);
     }
-  },
-
-  onLoad() {
-
   },
 
   // 获取版本信息
   async bindVersion() {
     const version = http.getVersion();
     console.log(version);
+    wx.showModal({
+      content: `版本：${version.version}
+GO版本：${version.go_version}
+git hash：${version.git_hash}
+构建时间：${version.build_time}`,
+      showCancel: false,
+      title: 'gohttp版本信息'
+    })
   },
 
 
@@ -58,66 +69,76 @@ Page({
     var resp = http.post('/v1/post', JSON.stringify(params), null, "application/json; charset=utf-8", true);
     console.log(resp);
     if (resp.err_code != 0) {
-      // alert(`err: ${resp.err} err_code: ${resp.err_code}`);
       wx.showModal({
-        cancelColor: 'cancelColor',
-        cancelText: 'cancelText',
-        confirmColor: 'confirmColor',
-        confirmText: 'confirmText',
-        content: 'content',
-        editable: true,
-        placeholderText: 'placeholderText',
-        showCancel: true,
-        title: 'title',
-        success: (result) => {},
-        fail: (res) => {},
-        complete: (res) => {},
+        content: `err: ${resp.err} err_code: ${resp.err_code}`,
+        showCancel: false,
       })
       return;
     }
-    // alert(`code: ${resp.status_code} status: ${resp.status}`);
+    wx.showModal({
+      content: `code: ${resp.status_code} status: ${resp.status}`,
+      showCancel: false,
+    })
   },
 
-  async get() {
-    params = {
+  async bindGET() {
+    const params = {
       "a": 99,
       "b": "100f4d4aa98f70d821e58a9c5e813b87100f4d4aa98f70d821e58a9c5e813b87100f4d4aa98f70d821e58a9c5e813b87"
     };
-    var resp = await Get('/v1/get', JSON.stringify(params), null, "", true);
+    var resp = await http.get('/v1/get', JSON.stringify(params), null, "", true);
     console.log(resp);
     if (resp.err_code != 0) {
-      alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+      wx.showModal({
+        content: `err: ${resp.err} err_code: ${resp.err_code}`,
+        showCancel: false,
+      })
       return;
     }
-    alert(`code: ${resp.status_code} status: ${resp.status}`);
+    wx.showModal({
+      content: `code: ${resp.status_code} status: ${resp.status}`,
+      showCancel: false,
+    })
   },
 
-  async put() {
-    params = {
+  async bindPUT() {
+    const params = {
       "a": 99,
       "b": "abc"
     };
-    var resp = await Put('/v1/put', JSON.stringify(params), null, "application/x-www-form-urlencoded", true);
+    var resp = await http.put('/v1/put', JSON.stringify(params), null, "application/x-www-form-urlencoded", true);
     console.log(resp);
     if (resp.err_code != 0) {
-      alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+      wx.showModal({
+        content: `err: ${resp.err} err_code: ${resp.err_code}`,
+        showCancel: false,
+      })
       return;
     }
-    alert(`code: ${resp.status_code} status: ${resp.status}`);
+    wx.showModal({
+      content: `code: ${resp.status_code} status: ${resp.status}`,
+      showCancel: false,
+    })
   },
 
-  async del() {
-    params = {
+  async bindDELETE() {
+    const params = {
       "a": 99,
       "b": "abc"
     };
-    var resp = await Delete('/v1/delete', JSON.stringify(params));
+    var resp = await http.delete('/v1/delete', JSON.stringify(params), null, '', false);
     console.log(resp);
     if (resp.err_code != 0) {
-      alert(`err: ${resp.err} err_code: ${resp.err_code}`);
+      wx.showModal({
+        content: `err: ${resp.err} err_code: ${resp.err_code}`,
+        showCancel: false,
+      })
       return;
     }
-    alert(`code: ${resp.status_code} status: ${resp.status}`);
+    wx.showModal({
+      content: `code: ${resp.status_code} status: ${resp.status}`,
+      showCancel: false,
+    })
   },
 
 
