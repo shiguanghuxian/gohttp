@@ -33,7 +33,7 @@ ios-x86_64:
 	GOARCH=amd64 \
 	SDK=iphonesimulator \
 	CC=$(PWD)/clangwrap.sh \
-	${GOBUILD} -o bin/ios/${LIB_NAME}.dylib -tags ios -buildmode=c-shared *.go
+	${GOBUILD_DEBUG} -o bin/ios/${LIB_NAME}.dylib -tags ios -buildmode=c-shared *.go
 	cp bin/ios/${LIB_NAME}.dylib ../../example/ios/dylib
 
 android: 

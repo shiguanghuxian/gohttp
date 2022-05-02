@@ -25,6 +25,15 @@ func GetVersion() *C.char {
 	return C.CString(string(data))
 }
 
+//export SetCookiePath
+func SetCookiePath(in *string) {
+	if *in == "" {
+		gohttp.Log("cookie存储路径设置为空", *in)
+		return
+	}
+	goHttp.SetCookieJar(NewFileCookieJar(*in))
+}
+
 //export SetBaseAddress
 func SetBaseAddress(in *string) {
 	goHttp.SetBaseAddress(*in)

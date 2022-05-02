@@ -19,6 +19,11 @@ class Http {
     goSetBaseAddress(GoString.fromString(baseAddr));
   }
 
+  // 设置cookie缓存路径
+  setCookiePath(String baseAddr) async {
+    goSetCookiePath(GoString.fromString(baseAddr));
+  }
+
   // 设置超时时间 秒
   setTimeout(int timeout) async {
     goSetTimeout(timeout);

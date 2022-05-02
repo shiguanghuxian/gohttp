@@ -158,7 +158,18 @@ func decryptParams() gin.HandlerFunc {
 	}
 }
 
+var (
+	counter = 1
+)
+
 func get(c *gin.Context) {
+	counter++
+	c.SetCookie("counter", fmt.Sprint(counter), 7*24*60*60, "/", "localhost", false, false)
+	cookieCounter, err := c.Cookie("counter")
+	if err != nil {
+		log.Println("读取cookie错误", err)
+	}
+	log.Println("读取cookie", cookieCounter)
 	c.JSON(http.StatusOK, &Msg{
 		Code:    1,
 		Message: "success",

@@ -3,8 +3,9 @@ package gohttp
 import (
 	"context"
 	"fmt"
+	"gohttp/gosrc/gohttp/cookiejar"
 	"net/http"
-	"net/http/cookiejar"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -55,14 +56,20 @@ const (
 	RateLimitType      = RateLimitTypeAllow // 限流处理类型，根据使用，修改此值
 )
 
-// TODO cookie的持久化
+// cookiejar 比系统库增加获取key和落地存储
+type GoHttpCookieJar interface {
+	http.CookieJar
+	SaveCookies(u *url.URL)    // 保存cookie到持久化
+	InitCookies(u *url.URL)    // 从本地加载cookie到Jar
+	GetHash(u *url.URL) string // 获取cookie唯一标识
+}
 
 type GoHttp struct {
 	BaseAddress string            // 请求接口根地址，当接口请求不以http或https开头时使用
 	Header      map[string]string // 公共头
 	Timeout     int64             // 请求超时 单位秒
 	Client      http.Client       // http 客户端
-	cookieJar   *cookiejar.Jar    // cookie管理
+	cookieJar   GoHttpCookieJar   // cookie管理
 	limiter     *rate.Limiter     // 限流器
 }
 
@@ -71,7 +78,8 @@ func NewGoHttp() *GoHttp {
 	header[HeaderVersion] = VERSION
 	header[HeaderBuildTime] = BUILD_TIME
 
-	cookieJar, _ := cookiejar.New(nil)
+	// 默认cookie管理
+	cookieJar := new(cookiejar.DefaultCookieJar)
 
 	// 初始化限流器
 	var limiter *rate.Limiter
@@ -86,6 +94,7 @@ func NewGoHttp() *GoHttp {
 		cookieJar:   cookieJar,
 		Client: http.Client{
 			Timeout: time.Duration(DefaultTimeout) * time.Second,
+			Jar:     cookieJar,
 		},
 		limiter: limiter,
 	}
@@ -108,6 +117,15 @@ func (gh *GoHttp) SetTimeout(timeout int64) {
 	}
 	gh.Timeout = timeout
 	gh.Client.Timeout = time.Duration(timeout) * time.Second
+}
+
+// 设置cookie存储
+func (gh *GoHttp) SetCookieJar(cookieJar GoHttpCookieJar) {
+	if cookieJar == nil {
+		return
+	}
+	gh.cookieJar = cookieJar
+	gh.Client.Jar = cookieJar
 }
 
 // 获取请求完整地址

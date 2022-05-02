@@ -6,7 +6,7 @@ final publicHttp = Http()
   ..setTimeout(HttpConfig.timeout);
 
 class HttpConfig {
-  static const baseAddress = "http://127.0.0.1:9999"; // 根请求地址
+  static const baseAddress = "http://localhost:9999"; // 根请求地址
   static const timeout = 20; // 访问超时 20s
 }
 

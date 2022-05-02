@@ -33,6 +33,12 @@ SetBaseAddressFunc goSetBaseAddress = lib
     .lookup<NativeFunction<Void Function(Pointer<GoString>)>>('SetBaseAddress')
     .asFunction();
 
+// 设置cookie存储路径
+typedef SetCookiePathFunc = void Function(Pointer<GoString>);
+SetCookiePathFunc goSetCookiePath = lib
+    .lookup<NativeFunction<Void Function(Pointer<GoString>)>>('SetCookiePath')
+    .asFunction();
+
 // 设置公共请求头
 typedef SetHeaderFunc = void Function(Pointer<GoString>);
 SetHeaderFunc goSetHeader = lib

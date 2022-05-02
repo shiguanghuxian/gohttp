@@ -103,6 +103,20 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	js, _ := json.Marshal(req.Header)
 	Log(string(js))
 
+	// 尝试初始化cookie
+	gh.cookieJar.InitCookies(req.URL)
+	// 记录请求前后cookie变化
+	cookieOldHash := gh.cookieJar.GetHash(req.URL)
+	defer func() {
+		// 发生变化重新保存cookie到文件
+		if cookieOldHash != gh.cookieJar.GetHash(req.URL) {
+			gh.cookieJar.SaveCookies(req.URL)
+			Log("发生cookie变化", gh.cookieJar.Cookies(req.URL))
+		}
+	}()
+
+	Log("请求cookie", gh.cookieJar.Cookies(req.URL))
+
 	resp, err := gh.Client.Do(req)
 	if err != nil {
 		Log(err)
@@ -111,6 +125,7 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 			ErrCode: CodeFail,
 		}
 	}
+	Log("响应cookie", resp.Cookies())
 	return gh.ResponseToResponseData(resp)
 }
 

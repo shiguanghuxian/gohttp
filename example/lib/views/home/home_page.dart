@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:example/http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gohttp/gohttp.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -18,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _setCookiePath();
   }
 
   @override
@@ -25,6 +28,20 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  // 设置请求根路径
+  _setCookiePath() async {
+    Directory tempDir = await getTemporaryDirectory();
+    if (tempDir != null) {
+      Directory cacheCookie = Directory(tempDir.path + "/" + "cache_cookie");
+      if (!cacheCookie.existsSync()) {
+        cacheCookie.create();
+      }
+      publicHttp
+          .setCookiePath(cacheCookie.path);
+    }
+  }
+
+  // 显示版本信息
   void _showVersion() async {
     // 输出版本信息
     dynamic version = publicHttp.getVersion();
