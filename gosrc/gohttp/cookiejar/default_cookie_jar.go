@@ -1,7 +1,6 @@
 package cookiejar
 
 import (
-	"log"
 	"net/url"
 )
 
@@ -25,9 +24,9 @@ type DefaultCookieJar struct {
 }
 
 func (dcj *DefaultCookieJar) SaveCookies(u *url.URL) {
-	log.Println("存储cookie", u.String())
+	// log.Println("存储cookie", u.String())
 }
 
 func (dcj *DefaultCookieJar) InitCookies(u *url.URL) {
-	log.Println("初始化cookie", u.String())
+	// log.Println("初始化cookie", u.String())
 }

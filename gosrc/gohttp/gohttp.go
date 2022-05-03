@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gohttp/gosrc/gohttp/cookiejar"
+	"gohttp/gosrc/gohttp/gohttplog"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -35,6 +36,7 @@ func init() {
 			BUILD_TIME = fmt.Sprint(t1 / 1000)
 		}
 	}
+	gohttplog.DEBUG = DEBUG == "true"
 }
 
 const (
@@ -79,7 +81,7 @@ func NewGoHttp() *GoHttp {
 	header[HeaderBuildTime] = BUILD_TIME
 
 	// 默认cookie管理
-	cookieJar := new(cookiejar.DefaultCookieJar)
+	cookieJar := cookiejar.NewDefaultCookieJar()
 
 	// 初始化限流器
 	var limiter *rate.Limiter
@@ -121,10 +123,9 @@ func (gh *GoHttp) SetTimeout(timeout int64) {
 
 // 设置cookie存储
 func (gh *GoHttp) SetCookieJar(cookieJar GoHttpCookieJar) {
-	if cookieJar == nil {
-		return
+	if cookieJar != nil {
+		gh.cookieJar = cookieJar
 	}
-	gh.cookieJar = cookieJar
 	gh.Client.Jar = cookieJar
 }
 
@@ -147,13 +148,13 @@ func (gh *GoHttp) requestLimiter() *ResponseData {
 		defer cancel()
 		err := gh.limiter.Wait(ctx)
 		if err != nil {
-			Log("限流等待错误", err)
+			gohttplog.Log("限流等待错误", err)
 			return LimiterError
 		}
 	case RateLimitTypeAllow:
 		ok := gh.limiter.Allow()
 		if !ok {
-			Log("限流Allow")
+			gohttplog.Log("限流Allow")
 			return LimiterError
 		}
 	}
@@ -169,7 +170,7 @@ func isRateLimit() bool {
 func getRateLimitBurst() int {
 	num, err := strconv.Atoi(RATE_LIMIT_BURST)
 	if err != nil {
-		Log("限流设置错误", err)
+		gohttplog.Log("限流设置错误", err)
 	}
 	if num < 1 || num > MaxRateLimitBurst {
 		num = MaxRateLimitBurst
@@ -181,7 +182,7 @@ func getRateLimitBurst() int {
 func getRateLimitLimit() rate.Limit {
 	num, err := strconv.Atoi(RATE_LIMIT_LIMIT)
 	if err != nil {
-		Log("限流设置错误", err)
+		gohttplog.Log("限流设置错误", err)
 	}
 	var r rate.Limit
 	if num < 1 || num > MaxRateLimitLimit {

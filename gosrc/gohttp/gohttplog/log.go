@@ -1,9 +1,12 @@
-package gohttp
+//go:build !wasm
+// +build !wasm
+
+package gohttplog
 
 import "log"
 
 func Log(v ...interface{}) {
-	if DEBUG != "true" {
+	if DEBUG {
 		return
 	}
 	// console := js.Global().Get("console")

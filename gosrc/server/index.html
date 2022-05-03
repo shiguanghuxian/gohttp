@@ -24,7 +24,7 @@
             .then((result) => {
                 go.run(result.instance)
                 console.log(GetVersion())
-                SetBaseAddress('http://127.0.0.1:9999');
+                SetBaseAddress('http://localhost:9999');
                 SetTimeout(15);
                 SetHeader("ZXP-DEMO", "test_header");
             });

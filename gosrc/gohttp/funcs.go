@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"gohttp/gosrc/gohttp/gohttplog"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,7 +17,7 @@ func HashString(s string) string {
 	h.Write([]byte(s))
 	str := hex.EncodeToString(h.Sum(nil))
 	start, _ := strconv.Atoi(str[:1])
-	Log("hash剪切起始位置", start)
+	gohttplog.Log("hash剪切起始位置", start)
 	return str[start : 32+start]
 }
 
@@ -45,7 +46,7 @@ func Signature(params map[string]string, t string) (sign string) {
 		str += fmt.Sprintf("%s=%s", v, params[v])
 	}
 
-	Log("签名", str, VERSION, t)
+	gohttplog.Log("签名", str, VERSION, t)
 	// 计算签名
 	sign = genSignature(t, str)
 	return

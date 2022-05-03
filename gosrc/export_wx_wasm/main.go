@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"gohttp/gosrc/gohttp"
+	"gohttp/gosrc/gohttp/gohttplog"
 	"log"
 	"syscall/js"
 )
@@ -10,8 +11,13 @@ import (
 // 参考 https://withblue.ink/2020/10/03/go-webassembly-http-requests-and-promises.html
 
 var (
-	goHttp = gohttp.NewGoHttp()
+	goHttp *gohttp.GoHttp
 )
+
+func init() {
+	goHttp = gohttp.NewGoHttp()
+	goHttp.SetCookieJar(nil)
+}
 
 // GetVersion 获取gohttp版本信息
 func GetVersion() js.Func {
@@ -164,7 +170,7 @@ func request(method string, args []js.Value) interface{} {
 		isEncrypt = args[4].Bool()
 	}
 
-	gohttp.Log("请求", url, params, header, contentType, isEncrypt)
+	gohttplog.Log("请求", url, params, header, contentType, isEncrypt)
 
 	responseData := goHttp.Request(method, &gohttp.RequestData{
 		Url:         url,

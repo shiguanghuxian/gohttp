@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"gohttp/gosrc/gohttp/gohttplog"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -18,8 +19,8 @@ import (
 /* 几种http请求 */
 
 func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData *ResponseData) {
-	Log("开始处理请求", requestData.Url)
-	defer Log("结束处理请求", requestData.Url)
+	gohttplog.Log("开始处理请求", requestData.Url)
+	defer gohttplog.Log("结束处理请求", requestData.Url)
 
 	startTime := time.Now()
 	defer func() {
@@ -49,7 +50,7 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	case "DELETE":
 		reqUrl, responseData = gh.DELETE(requestData)
 	default:
-		Log("不支持的请求类型")
+		gohttplog.Log("不支持的请求类型")
 		return MethodError
 	}
 	if responseData != nil {
@@ -101,7 +102,7 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 	}
 
 	js, _ := json.Marshal(req.Header)
-	Log(string(js))
+	gohttplog.Log(string(js))
 
 	// 尝试初始化cookie
 	gh.cookieJar.InitCookies(req.URL)
@@ -111,21 +112,21 @@ func (gh *GoHttp) Request(method string, requestData *RequestData) (responseData
 		// 发生变化重新保存cookie到文件
 		if cookieOldHash != gh.cookieJar.GetHash(req.URL) {
 			gh.cookieJar.SaveCookies(req.URL)
-			Log("发生cookie变化", gh.cookieJar.Cookies(req.URL))
+			gohttplog.Log("发生cookie变化", gh.cookieJar.Cookies(req.URL))
 		}
 	}()
 
-	Log("请求cookie", gh.cookieJar.Cookies(req.URL))
+	gohttplog.Log("请求cookie", gh.cookieJar.Cookies(req.URL))
 
 	resp, err := gh.Client.Do(req)
 	if err != nil {
-		Log(err)
+		gohttplog.Log(err)
 		return &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
 		}
 	}
-	Log("响应cookie", resp.Cookies())
+	gohttplog.Log("响应cookie", resp.Cookies())
 	return gh.ResponseToResponseData(resp)
 }
 
@@ -145,7 +146,7 @@ func (gh *GoHttp) POST(requestData *RequestData) (contentType string, body io.Re
 func (gh *GoHttp) GET(requestData *RequestData) (string, *ResponseData) {
 	urlInfo, err := url.Parse(gh.getFullUrl(requestData.Url))
 	if err != nil {
-		Log("解析get请求url格式错误", requestData.Url, err)
+		gohttplog.Log("解析get请求url格式错误", requestData.Url, err)
 		return "", &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
@@ -177,7 +178,7 @@ func (gh *GoHttp) PUT(requestData *RequestData) (contentType string, body io.Rea
 func (gh *GoHttp) DELETE(requestData *RequestData) (string, *ResponseData) {
 	urlInfo, err := url.Parse(gh.getFullUrl(requestData.Url))
 	if err != nil {
-		Log("解析get请求url格式错误", requestData.Url, err)
+		gohttplog.Log("解析get请求url格式错误", requestData.Url, err)
 		return "", &ResponseData{
 			Err:     err.Error(),
 			ErrCode: CodeFail,
@@ -201,7 +202,7 @@ func (gh *GoHttp) ResponseToResponseData(resp *http.Response) *ResponseData {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		Log(err)
+		gohttplog.Log(err)
 		return ResponseReadError
 	}
 	return &ResponseData{
@@ -231,7 +232,7 @@ func (gh *GoHttp) requestParamsToJsonStr(params map[string]interface{}) io.Reade
 	}
 	body, err := json.Marshal(params)
 	if err != nil {
-		Log("请求参数转json错误", err)
+		gohttplog.Log("请求参数转json错误", err)
 	}
 	return bytes.NewReader(body)
 }
@@ -258,7 +259,7 @@ func (gh *GoHttp) signature(reqUrl string, method string, requestData *RequestDa
 	} else {
 		urlInfo, err := url.Parse(gh.getFullUrl(reqUrl))
 		if err != nil {
-			Log("签名计算解析get请求url格式错误", reqUrl, err)
+			gohttplog.Log("签名计算解析get请求url格式错误", reqUrl, err)
 		}
 		queryParams := urlInfo.Query()
 		for k, v := range queryParams {
@@ -278,12 +279,12 @@ func (gh *GoHttp) signature(reqUrl string, method string, requestData *RequestDa
 func (gh *GoHttp) encryptUrlParams(reqUrl string, sign string) string {
 	urlInfo, err := url.Parse(gh.getFullUrl(reqUrl))
 	if err != nil {
-		Log("加密，解析get请求url格式错误", reqUrl, err)
+		gohttplog.Log("加密，解析get请求url格式错误", reqUrl, err)
 		return reqUrl
 	}
 	q, err := goEncrypt.AesCbcEncrypt([]byte(urlInfo.RawQuery), GetEncryptKey(sign), GetEncryptIv(sign))
 	if err != nil {
-		Log("aes加密错误url", reqUrl, sign, err)
+		gohttplog.Log("aes加密错误url", reqUrl, sign, err)
 		return reqUrl
 	}
 	// 只保留q参数
@@ -300,12 +301,12 @@ func (gh *GoHttp) encryptBodyParams(body io.Reader, sign string) io.Reader {
 	}
 	bodyVal, err := ioutil.ReadAll(body)
 	if err != nil {
-		Log("加密读取body错误", err)
+		gohttplog.Log("加密读取body错误", err)
 		return nil
 	}
 	q, err := goEncrypt.AesCbcEncrypt(bodyVal, GetEncryptKey(sign), GetEncryptIv(sign))
 	if err != nil {
-		Log("aes加密错误body", sign, err)
+		gohttplog.Log("aes加密错误body", sign, err)
 		return bytes.NewBuffer(bodyVal)
 	}
 	return bytes.NewBuffer(q)

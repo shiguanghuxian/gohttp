@@ -31,14 +31,11 @@ class _HomePageState extends State<HomePage> {
   // 设置请求根路径
   _setCookiePath() async {
     Directory tempDir = await getTemporaryDirectory();
-    if (tempDir != null) {
-      Directory cacheCookie = Directory(tempDir.path + "/" + "cache_cookie");
-      if (!cacheCookie.existsSync()) {
-        cacheCookie.create();
-      }
-      publicHttp
-          .setCookiePath(cacheCookie.path);
+    Directory cacheCookie = Directory(tempDir.path + "/" + "cache_cookie");
+    if (!cacheCookie.existsSync()) {
+      cacheCookie.create();
     }
+    publicHttp.setCookiePath(cacheCookie.path);
   }
 
   // 显示版本信息
