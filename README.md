@@ -4,7 +4,7 @@
 
 ## 前言
 
-有一天需要一个抖音爬虫，去抓取一些数据，发现抖音很多接口都使用了动态连结库进行加密请求，与之相同的快手也做了类似方案。
+需要一个抖音爬虫，去抓取一些数据，发现抖音很多接口都使用了动态连结库进行加密请求，与之相同的快手也做了类似方案。
 从而感想到业务中或多或少都会遇到一些接口对于安全要求比较高，随产生开发一个加密请求库，以C动态链接库形式提供。
 此库最佳的开发语言应为C或rust，但本人现阶段掌握的语言是go，go语言唯一缺点是打包动态库体积较大，经探索体积在5mb左右，
 这个大小放在10年前不可容忍，但现阶段一个app体积一般都会冲破100mb，一些大型app接近1gb，所以10mb以内打包一个动态库完全可以忍受，
@@ -16,6 +16,99 @@
 ## 代码结构
 
 ```
+├── CHANGELOG.md
+├── LICENSE
+├── README.md
+├── analysis_options.yaml
+├── example // 示例文件夹
+│   ├── README.md
+│   ├── analysis_options.yaml
+│   ├── android
+│   ├── ios
+│   ├── lib
+│   │   ├── http
+│   │   │   └── http.dart
+│   │   ├── main.dart
+│   │   └── views
+│   │       └── home
+│   │           └── home_page.dart
+│   ├── macos
+│   └── windows
+├── go.mod
+├── gosrc // gohttp核心go代码
+│   ├── README.md
+│   ├── export_c // c动态库
+│   │   ├── Makefile
+│   │   ├── clangwrap.sh
+│   │   ├── file_cookie_jar.go // 本地cookie存储实现
+│   │   ├── main.go // c导出函数
+│   │   └── make.bat
+│   ├── export_wasm // 浏览器标准wasm
+│   │   ├── Makefile
+│   │   └── main.go
+│   ├── export_wx_wasm // 小程序wasm
+│   │   ├── Makefile
+│   │   └── main.go
+│   ├── gohttp
+│   │   ├── ascii
+│   │   │   ├── print.go
+│   │   │   └── print_test.go
+│   │   ├── cookiejar
+│   │   │   ├── cookie_jar.go
+│   │   │   ├── default_cookie_jar.go
+│   │   │   └── punycode.go
+│   │   ├── errors.go
+│   │   ├── funcs.go
+│   │   ├── gohttp.go
+│   │   ├── gohttplog
+│   │   │   ├── env.go
+│   │   │   ├── log.go
+│   │   │   └── log_js.go
+│   │   ├── model.go
+│   │   └── request.go
+│   ├── server // 服务端示例，使用gin，其它框架可参考中间件实现
+│   │   ├── Makefile
+│   │   ├── index.html
+│   │   ├── main.go
+│   │   └── static
+│   │       └── wasm_exec.js
+│   └── version
+├── lib // flutter插件
+│   ├── gohttp.dart
+│   └── src
+│       ├── godart.dart
+│       ├── gohttp.dart
+│       └── model.dart
+├── miniprogram // 微信小程序
+│   ├── app.js
+│   ├── app.json
+│   ├── app.wxss
+│   ├── miniprogram_npm
+│   │   └── text-encoder
+│   │       ├── index.js
+│   │       └── index.js.map
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── pages
+│   │   ├── index
+│   │   │   ├── assets
+│   │   │   │   ├── http.js
+│   │   │   │   └── wasm_exec.js // 经过改写的go wasm胶水js
+│   │   │   ├── index.js
+│   │   │   ├── index.json
+│   │   │   ├── index.wxml
+│   │   │   └── index.wxss
+│   │   └── logs
+│   │       ├── logs.js
+│   │       ├── logs.json
+│   │       ├── logs.wxml
+│   │       └── logs.wxss
+│   ├── project.config.json
+│   ├── project.private.config.json
+│   ├── sitemap.json
+│   └── utils
+│       └── util.js
+├── pubspec.yaml
 
 ```
 
